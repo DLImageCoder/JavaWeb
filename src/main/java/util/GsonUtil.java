@@ -6,6 +6,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by VOYAGER on 2018/8/7.
@@ -20,5 +21,11 @@ public class GsonUtil {
             arrayList.add(new Gson().fromJson(jsonObject, clazz));
         }
         return arrayList;
+    }
+
+    public static List<String> jsonToStringList(String string) {
+        Type listType = new TypeToken<List<String>>() {
+        }.getType();
+        return new Gson().fromJson(string, listType);
     }
 }

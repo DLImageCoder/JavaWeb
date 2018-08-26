@@ -16,5 +16,15 @@ public class CommentBean {
         this.time=time;
     }
 
+    public String getUid(){
+        return uid;
+    }
 
+    public String getText(){
+        return text;
+    }
+
+    public String getTime(){
+        return time;
+    }
 }

@@ -76,13 +76,22 @@ public class LikeServlet extends HttpServlet {
     }
 
     private String appendLike(String likes, String uid) {
+        if (uid == null)
+            return likes;
         List<String> list;
         if (likes == null || likes.length() == 0) {
             list = new ArrayList<>();
         } else {
-            list = GsonUtil.jsonToArrayList(likes, String.class);
+            list = GsonUtil.jsonToStringList(likes);
         }
-        if (list.isEmpty() || !list.contains(uid)) {
+        if (list.isEmpty()) {
+            list.add(uid);
+        } else {
+            for (String str : list) {
+                if (uid.equals(str)) {
+                    return likes;
+                }
+            }
             list.add(uid);
         }
         return new Gson().toJson(list);
@@ -93,9 +102,13 @@ public class LikeServlet extends HttpServlet {
         if (likes == null || likes.length() == 0) {
             list = new ArrayList<>();
         } else {
-            list = GsonUtil.jsonToArrayList(likes, String.class);
+            list = GsonUtil.jsonToStringList(likes);
         }
-        list.remove(uid);
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).equals(uid)) {
+                list.remove(i);
+            }
+        }
         return new Gson().toJson(list);
     }
 }

@@ -5,7 +5,7 @@ package constant;
  */
 public class BaseConsts {
 
-    public static final String SPLASH="/";
+    public static final String SPLASH = "/";
 
     public static final String IMG_INPUT_Path = "/usr/develop/img/input";
     public static final String IMG_OUTPUT_Path = "/usr/develop/img/output";
@@ -23,6 +23,16 @@ public class BaseConsts {
     public static final int TYPE_APPEND = 0;
     public static final int TYPE_REMOVE = 1;
 
-    public static final String MODEL_PATH="/usr/develop/model";
-    public static final String MODEL_CARTOON="/CartoonGAN";
+    public static final String MODEL_PATH = "/usr/develop/model/style-transfer/";
+    public static final String MODEL_CARTOON = "/CartoonGAN";
+    public static final String MODEL_WAVE = "/style-wave";
+    public static final String MODEL_UDNIE = "/style-udnie";
+    public static final String MODEL_SCREAM = "/style-scream";
+    public static final String MODEL_RAIN_PRINCESS = "/style-rain";
+
+    public static final int TYPE_MODEL_WAVE = 0;
+    public static final int TYPE_MODEL_UDNIE = 1;
+    public static final int TYPE_MODEL_SCREAM = 2;
+    public static final int TYPE_MODEL_RAIN_PRINCESS = 3;
+
 }

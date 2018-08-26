@@ -52,6 +52,7 @@ public class GetUserInfoServlet extends HttpServlet {
                 }else{
                     infoBean.status=BaseConsts.STATUS_FAILED;
                 }
+                resultSet.close();
             }catch (Exception e){
                 infoBean.status=BaseConsts.STATUS_FAILED;
             }

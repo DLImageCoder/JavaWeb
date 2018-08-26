@@ -32,7 +32,7 @@ public class ImageRunnable implements Runnable {
     @Override
     public void run() {
         while (true) {
-            output = CmdUtil.execWithOutput("find " + BaseConsts.IMG_OUTPUT_Path + " -name \"" + imgName + "\"");
+            output = CmdUtil.execWithOutput("find " + BaseConsts.IMG_OUTPUT_Path + " -name " + imgName);
             if (!output.isEmpty() && output.get(0).equals(imgPath)) {
                 response();
                 deleteImg();

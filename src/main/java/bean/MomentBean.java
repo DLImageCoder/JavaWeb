@@ -11,13 +11,14 @@ public class MomentBean {
     public String text;
     public String imgs;
     public String comments;
-    public String likes;
+    public int likes;
+    public int hasLike;
 
     public MomentBean() {
     }
 
     public MomentBean(int momentId, int userId, String time,
-                      String text, String imgs, String comments, String likes) {
+                      String text, String imgs, String comments, int likes, int hasLike) {
         this.comments = comments;
         this.imgs = imgs;
         this.likes = likes;
@@ -25,6 +26,7 @@ public class MomentBean {
         this.text = text;
         this.time = time;
         this.userId = userId;
+        this.hasLike = hasLike;
     }
 
     public MomentBean setMomentId(int momentId) {
@@ -57,8 +59,13 @@ public class MomentBean {
         return this;
     }
 
-    public MomentBean setLikes(String likes) {
+    public MomentBean setLikes(int likes) {
         this.likes = likes;
+        return this;
+    }
+
+    public MomentBean setHasLike(int hasLike) {
+        this.hasLike = hasLike;
         return this;
     }
 }
