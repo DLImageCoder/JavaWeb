@@ -44,16 +44,8 @@
         } finally {
             ToolUtil.closeQuietly(resultSet, statement);
         }
-    } else {
-        status.setStatus(BaseConsts.STATUS_FAILED);
     }
-    Gson gson = new Gson();
-    response.setContentType("application/json;charset=utf-8");//指定返回的格式为JSON格式
-    response.setCharacterEncoding("UTF-8");//setContentType与setCharacterEncoding的顺序不能调换，否则还是无法解决中文乱码的问题
-    PrintWriter pw = response.getWriter();
-    pw.write(gson.toJson(status));
-    pw.flush();
-    pw.close();
+    ToolUtil.responseJson(response,new Gson().toJson(status));
 %>
 
 

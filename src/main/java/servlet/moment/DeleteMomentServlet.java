@@ -24,6 +24,7 @@ public class DeleteMomentServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        ToolUtil.setEncode(request,response);
         RealConnection conn = ConnectionManager.inst().getRealConnection();
 
         String uid = request.getParameter("userId");
@@ -34,7 +35,7 @@ public class DeleteMomentServlet extends HttpServlet {
                 && uid != null && uid.length() > 0) {
             RealPreparedStatement statement=null;
             try{
-                String sql="DELETE FROM user WHERE mid=? AND uid=?";
+                String sql="DELETE FROM moment WHERE mid=? AND uid=?";
                 statement=conn.prepareStatement(sql);
                 statement.setInt(1,Integer.parseInt(mid));
                 statement.setInt(2,Integer.parseInt(uid));

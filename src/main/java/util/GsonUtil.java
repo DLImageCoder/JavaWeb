@@ -12,6 +12,7 @@ import java.util.List;
  * Created by VOYAGER on 2018/8/7.
  */
 public class GsonUtil {
+
     public static <T> ArrayList<T> jsonToArrayList(String json, Class<T> clazz) {
         Type type = new TypeToken<ArrayList<JsonObject>>() {
         }.getType();

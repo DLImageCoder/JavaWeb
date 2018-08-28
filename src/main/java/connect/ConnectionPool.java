@@ -71,7 +71,7 @@ public final class ConnectionPool {
     void put(RealConnection connection) {
         if (!cleanupRunning) {
             cleanupRunning = true;
-            executor.execute(cleanupRunnable);
+            //executor.execute(cleanupRunnable);
         }
         connections.add(connection);
     }

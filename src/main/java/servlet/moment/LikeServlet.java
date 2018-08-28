@@ -1,13 +1,11 @@
 package servlet.moment;
 
-import bean.ExceptionBean;
 import bean.StatusBean;
 import com.google.gson.Gson;
-import connect.DataParcel;
-import connect.DatabaseConnection;
+import connect.*;
 import constant.BaseConsts;
-import util.EncodeUtil;
 import util.GsonUtil;
+import util.ToolUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -19,7 +17,6 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,48 +28,45 @@ public class LikeServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        EncodeUtil.setEncode(request, response);
+        ToolUtil.setEncode(request, response);
+        RealConnection conn = ConnectionManager.inst().getRealConnection();
 
-        DataParcel parcel = DatabaseConnection.createConnection();
-        Connection conn = parcel.getConnection();
         StatusBean status = new StatusBean();
 
-        String userId = request.getParameter("userId");
-        String momentId = request.getParameter("momentId");
+        String uid = request.getParameter("userId");
+        String mid = request.getParameter("momentId");
         String type = request.getParameter("type");
 
-        try {
+        if (mid != null && mid.length() > 0
+                && uid != null && uid.length() > 0) {
             String sql;
-            PreparedStatement statement;
-            ResultSet resultSet;
-            sql = "SELECT likes FROM moment WHERE mid=?";
-            statement = conn.prepareStatement(sql);
-            statement.setInt(1, Integer.parseInt(momentId));
-            resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                String likes = resultSet.getString("likes");
-                if (Integer.parseInt(type) == BaseConsts.TYPE_APPEND) {
-                    likes = appendLike(likes, userId);
-                } else if (Integer.parseInt(type) == BaseConsts.TYPE_REMOVE) {
-                    likes = removeLike(likes, userId);
-                }
-                sql = "UPDATE moment SET likes=? WHERE mid=?";
+            RealPreparedStatement statement = null;
+            ResultSet resultSet = null;
+            try {
+                sql = "SELECT likes FROM moment WHERE mid=?";
                 statement = conn.prepareStatement(sql);
-                statement.setString(1, likes);
-                statement.setInt(2, Integer.parseInt(momentId));
-                statement.executeUpdate();
-                status.setStatus(BaseConsts.STATUS_SUCESSED);
+                statement.setInt(1, Integer.parseInt(mid));
+                resultSet = statement.executeQuery();
+                if (resultSet.next()) {
+                    String likes = resultSet.getString("likes");
+                    if (Integer.parseInt(type) == BaseConsts.TYPE_APPEND) {
+                        likes = appendLike(likes, uid);
+                    } else if (Integer.parseInt(type) == BaseConsts.TYPE_REMOVE) {
+                        likes = removeLike(likes, uid);
+                    }
+                    sql = "UPDATE moment SET likes=? WHERE mid=?";
+                    statement = conn.prepareStatement(sql);
+                    statement.setString(1, likes);
+                    statement.setInt(2, Integer.parseInt(mid));
+                    statement.executeUpdate();
+                    status.setStatus(BaseConsts.STATUS_SUCESSED);
+                }
+            } catch (Exception e) {
+            } finally {
+                ToolUtil.closeQuietly(resultSet, statement);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-
-        Gson gson = new Gson();
-        PrintWriter pw = response.getWriter();
-        pw.write(gson.toJson(status));
-        pw.flush();
-        pw.close();
-        DatabaseConnection.closeConnection(parcel);
+        ToolUtil.responseJson(response,new Gson().toJson(status));
     }
 
     private String appendLike(String likes, String uid) {

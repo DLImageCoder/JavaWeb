@@ -1,14 +1,12 @@
 package servlet.moment;
 
 import bean.CommentBean;
-import bean.ExceptionBean;
 import bean.StatusBean;
 import com.google.gson.Gson;
-import connect.DataParcel;
-import connect.DatabaseConnection;
+import connect.*;
 import constant.BaseConsts;
-import util.EncodeUtil;
 import util.GsonUtil;
+import util.ToolUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -34,12 +32,10 @@ public class CommentServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        EncodeUtil.setEncode(request,response);
+        ToolUtil.setEncode(request,response);
+        RealConnection conn = ConnectionManager.inst().getRealConnection();
 
-        DataParcel parcel = DatabaseConnection.createConnection();
-        Connection conn = parcel.getConnection();
         StatusBean status = new StatusBean();
-
 
         String mid = request.getParameter("momentId");
         String text = request.getParameter("text");
@@ -48,10 +44,10 @@ public class CommentServlet extends HttpServlet {
 
         if (Integer.parseInt(mid) >= 0 && Integer.parseInt(uid) > 0
                 && text != null && text.length() > 0) {
+            String sql;
+            RealPreparedStatement statement=null;
+            ResultSet resultSet=null;
             try {
-                String sql;
-                PreparedStatement statement;
-                ResultSet resultSet;
                 sql = "SELECT comments FROM moment WHERE mid=?";
                 statement = conn.prepareStatement(sql);
                 statement.setInt(1, Integer.parseInt(mid));
@@ -71,15 +67,11 @@ public class CommentServlet extends HttpServlet {
                     status.setStatus(BaseConsts.STATUS_SUCESSED);
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
+            }finally {
+                ToolUtil.closeQuietly(resultSet,statement);
             }
         }
-        Gson gson = new Gson();
-        PrintWriter pw = response.getWriter();
-        pw.write(gson.toJson(status));
-        pw.flush();
-        pw.close();
-        DatabaseConnection.closeConnection(parcel);
+        ToolUtil.responseJson(response,new Gson().toJson(status));
     }
 
     private String appendComment(String comments, String uid, String text) {

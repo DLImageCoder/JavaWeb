@@ -79,4 +79,9 @@ public class ImageUtil {
 
         }
     }
+
+    public static void clearImages() {
+        CmdUtil.exec("rm -rf " + BaseConsts.IMG_INPUT_Path+"/*");
+        CmdUtil.exec("rm -rf " + BaseConsts.IMG_OUTPUT_Path+"/*");
+    }
 }

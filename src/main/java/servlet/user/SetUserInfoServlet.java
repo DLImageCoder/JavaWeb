@@ -2,23 +2,18 @@ package servlet.user;
 
 import bean.StatusBean;
 import com.google.gson.Gson;
-import connect.DataParcel;
-import connect.DatabaseConnection;
+import connect.*;
 import constant.BaseConsts;
-import util.EncodeUtil;
+import util.ToolUtil;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Part;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 
 /**
  * Created by VOYAGER on 2018/7/28.
@@ -27,10 +22,9 @@ import java.sql.ResultSet;
 public class SetUserInfoServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        EncodeUtil.setEncode(request,response);
+        ToolUtil.setEncode(request, response);
 
-        DataParcel parcel = DatabaseConnection.createConnection();
-        Connection conn = parcel.getConnection();
+        RealConnection conn = ConnectionManager.inst().getRealConnection();
 
         String userId = request.getParameter("userId");
         String name = request.getParameter("name");
@@ -40,9 +34,9 @@ public class SetUserInfoServlet extends HttpServlet {
 
         StatusBean status = new StatusBean();
         if (userId != null) {
+            String sql;
+            RealPreparedStatement statement = null;
             try {
-                String sql;
-                PreparedStatement statement;
                 if (name != null && name.length() > 0 && name.length() <= 40) {
                     sql = " UPDATE user SET name=? WHERE uid=? ";
                     statement = conn.prepareStatement(sql);
@@ -64,7 +58,7 @@ public class SetUserInfoServlet extends HttpServlet {
                     statement.setInt(2, Integer.parseInt(userId));
                     statement.executeUpdate();
                 }
-                if(head!=null&&head.length()>0){
+                if (head != null && head.length() > 0) {
                     sql = " UPDATE user SET head=? WHERE uid=? ";
                     statement = conn.prepareStatement(sql);
                     statement.setString(1, head);
@@ -74,16 +68,12 @@ public class SetUserInfoServlet extends HttpServlet {
                 status.setStatus(BaseConsts.STATUS_SUCESSED);
             } catch (Exception e) {
                 status.setStatus(BaseConsts.STATUS_FAILED);
+            } finally {
+                ToolUtil.closeQuietly(statement);
             }
         } else {
             status.setStatus(BaseConsts.STATUS_FAILED);
         }
-        Gson gson = new Gson();
-        PrintWriter pw = response.getWriter();
-        pw.write(gson.toJson(status));
-        pw.flush();
-        pw.close();
-
-        DatabaseConnection.closeConnection(parcel);
+        ToolUtil.responseJson(response, new Gson().toJson(status));
     }
 }

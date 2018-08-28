@@ -23,16 +23,31 @@ public class BaseConsts {
     public static final int TYPE_APPEND = 0;
     public static final int TYPE_REMOVE = 1;
 
-    public static final String MODEL_PATH = "/usr/develop/model/style-transfer/";
-    public static final String MODEL_CARTOON = "/CartoonGAN";
-    public static final String MODEL_WAVE = "/style-wave";
-    public static final String MODEL_UDNIE = "/style-udnie";
-    public static final String MODEL_SCREAM = "/style-scream";
-    public static final String MODEL_RAIN_PRINCESS = "/style-rain";
+    public static final String MODEL_PATH = "/usr/develop/model";
+    public static final String MODEL_WAVE = "/style-transfer/style-wave";
+    public static final String MODEL_UDNIE = "/style-transfer/style-udnie";
+    public static final String MODEL_SCREAM = "/style-transfer/style-scream";
+    public static final String MODEL_RAIN_PRINCESS = "/style-transfer/style-rain";
+    public static final String MODEL_PAPRIKA = "/style-cartoonization/Paprika";
+    public static final String MODEL_HAYAO = "/style-cartoonization/Hayao";
+    public static final String MODEL_SPIRITED = "/style-cartoonization/spirited";
+    public static final String MODEL_GENDER_MALE = "/face-residual/gender-male";
+    public static final String MODEL_GENDER_FEMALE = "/face-residual/gender-female";
+    public static final String MODEL_SMILE = "/face-residual/smile";
+    public static final String MODEL_HAIR_BLACK = "/face-residual/hair-black";
+    public static final String MODEL_HAIR_BROWN = "/face-residual/hair-brown";
 
     public static final int TYPE_MODEL_WAVE = 0;
     public static final int TYPE_MODEL_UDNIE = 1;
     public static final int TYPE_MODEL_SCREAM = 2;
     public static final int TYPE_MODEL_RAIN_PRINCESS = 3;
+    public static final int TYPE_MODEL_PAPRIKA = 4;
+    public static final int TYPE_MODEL_HAYAO = 5;
+    public static final int TYPE_MODEL_SPIRITED = 6;
+    public static final int TYPE_MODEL_GENDER_MALE = 7;
+    public static final int TYPE_MODEL_GENDER_FEMALE = 8;
+    public static final int TYPE_MODEL_SMILE = 9;
+    public static final int TYPE_MODEL_HAIR_BLACK = 10;
+    public static final int TYPE_MODEL_HAIR_BROWN = 11;
 
 }

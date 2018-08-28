@@ -1,15 +1,19 @@
 package util;
 
+import com.sun.istack.internal.NotNull;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 
 /**
  * Created by VOYAGER on 2018/8/25.
  */
 public class ToolUtil {
 
-    public static void closeQuietly(AutoCloseable... closeable) {
+    public static void closeQuietly(@NotNull AutoCloseable... closeable) {
         for (int i = 0; i < closeable.length; i++) {
             try {
                 closeable.clone();
@@ -19,9 +23,7 @@ public class ToolUtil {
         }
     }
 
-    public static void responseJson(HttpServletResponse response,String str){
-        response.setContentType("application/json;charset=utf-8");//指定返回的格式为JSON格式
-        response.setCharacterEncoding("UTF-8");//setContentType与setCharacterEncoding的顺序不能调换，否则还是无法解决中文乱码的问题
+    public static void responseJson(HttpServletResponse response, String str) {
         PrintWriter pw = null;
         try {
             pw = response.getWriter();
@@ -29,10 +31,20 @@ public class ToolUtil {
             pw.flush();
         } catch (IOException e) {
             e.printStackTrace();
-        }finally {
-            if(pw!=null){
+        } finally {
+            if (pw != null) {
                 pw.close();
             }
+        }
+    }
+
+    public static void setEncode(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            request.setCharacterEncoding("UTF-8");
+            response.setContentType("application/json;charset=UTF-8");
+            response.setCharacterEncoding("UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
         }
     }
 }

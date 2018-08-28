@@ -1,13 +1,11 @@
 package servlet.user;
 
 import bean.GetUserInfoBean;
-import bean.StatusBean;
 import bean.UserBean;
 import com.google.gson.Gson;
-import connect.DataParcel;
-import connect.DatabaseConnection;
+import connect.*;
 import constant.BaseConsts;
-import util.EncodeUtil;
+import util.ToolUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -27,42 +25,37 @@ import java.sql.ResultSet;
 public class GetUserInfoServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        EncodeUtil.setEncode(request,response);
+        ToolUtil.setEncode(request, response);
 
-        DataParcel parcel = DatabaseConnection.createConnection();
-        Connection conn = parcel.getConnection();
-        GetUserInfoBean infoBean=new GetUserInfoBean();
+        RealConnection conn = ConnectionManager.inst().getRealConnection();
+
+        GetUserInfoBean infoBean = new GetUserInfoBean();
         String userId = request.getParameter("userId");
 
-        if (userId != null) {
+        if (userId != null && userId.length() > 0) {
+            String sql;
+            RealPreparedStatement statement = null;
+            ResultSet resultSet = null;
             try {
-                String sql = " SELECT * FROM user WHERE uid=? ";
-                PreparedStatement statement = conn.prepareStatement(sql);
+                sql = " SELECT * FROM user WHERE uid=? ";
+                statement = conn.prepareStatement(sql);
                 statement.setInt(1, Integer.parseInt(userId));
-                ResultSet resultSet=statement.executeQuery();
+                resultSet = statement.executeQuery();
 
-                if(resultSet.next()){
-                    infoBean.userInfo=new UserBean();
-                    infoBean.userInfo.userId=resultSet.getInt("uid");
-                    infoBean.userInfo.name=resultSet.getString("name");
-                    infoBean.userInfo.age=resultSet.getInt("age");
-                    infoBean.userInfo.sex=resultSet.getString("sex");
-                    infoBean.userInfo.head=resultSet.getString("head");
-                    infoBean.status=BaseConsts.STATUS_SUCESSED;
-                }else{
-                    infoBean.status=BaseConsts.STATUS_FAILED;
+                if (resultSet.next()) {
+                    infoBean.userInfo = new UserBean();
+                    infoBean.userInfo.userId = resultSet.getInt("uid");
+                    infoBean.userInfo.name = resultSet.getString("name");
+                    infoBean.userInfo.age = resultSet.getInt("age");
+                    infoBean.userInfo.sex = resultSet.getString("sex");
+                    infoBean.userInfo.head = resultSet.getString("head");
+                    infoBean.status = BaseConsts.STATUS_SUCESSED;
                 }
-                resultSet.close();
-            }catch (Exception e){
-                infoBean.status=BaseConsts.STATUS_FAILED;
+            } catch (Exception e) {
+            } finally {
+                ToolUtil.closeQuietly(resultSet, statement);
             }
         }
-        Gson gson = new Gson();
-        PrintWriter pw = response.getWriter();
-        pw.write(gson.toJson(infoBean));
-        pw.flush();
-        pw.close();
-
-        DatabaseConnection.closeConnection(parcel);
+        ToolUtil.responseJson(response, new Gson().toJson(infoBean));
     }
 }

@@ -13,11 +13,13 @@ import java.util.List;
 public class CmdUtil {
     public static boolean exec(String cmd) {
         try {
-            Runtime.getRuntime().exec(new String[]{"/bin/sh", "-c", cmd}).destroy();
+            Process p=Runtime.getRuntime().exec(new String[]{"/bin/sh", "-c", cmd});//.destroy();
+            p.waitFor();
             return true;
         } catch (IOException e) {
-            return false;
+        } catch (InterruptedException e) {
         }
+        return false;
     }
 
     public static List<String> execWithOutput(String cmd) {
