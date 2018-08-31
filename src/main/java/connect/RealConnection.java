@@ -17,6 +17,10 @@ public class RealConnection implements IStatementCallback {
     private long idleStartNanoTime = Long.MAX_VALUE;
 
     public RealConnection() {
+        init();
+    }
+
+    private void init(){
         try {
             Class.forName("com.mysql.jdbc.Driver");
             //Class.forName("org.git.mm.mysql.Driver");211.87.227.230:
@@ -29,6 +33,9 @@ public class RealConnection implements IStatementCallback {
     public RealPreparedStatement prepareStatement(String sql) {
         RealPreparedStatement realStatement = null;
         try {
+            if(connection.isClosed()){
+                init();
+            }
             realStatement = new RealPreparedStatement(
                     connection.prepareStatement(sql), this);
         } catch (SQLException e) {

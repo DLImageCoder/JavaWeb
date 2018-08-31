@@ -71,12 +71,8 @@ public class ImageUtil {
                     os.write(bytes, 0, len);
                 }
             }
-            System.out.println("responseCode is "+responseCode+"\n"
-                +"url is "+url);
         } catch (Exception e) {
             e.printStackTrace();
-        }finally {
-
         }
     }
 

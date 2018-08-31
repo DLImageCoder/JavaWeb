@@ -1,9 +1,6 @@
 package util;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,11 +10,27 @@ import java.util.List;
 public class CmdUtil {
     public static boolean exec(String cmd) {
         try {
-            Process p=Runtime.getRuntime().exec(new String[]{"/bin/sh", "-c", cmd});//.destroy();
+            Process p = Runtime.getRuntime().exec(new String[]{"/bin/sh", "-c", cmd});//.destroy();
             p.waitFor();
             return true;
         } catch (IOException e) {
         } catch (InterruptedException e) {
+        }
+        return false;
+    }
+
+    public static boolean execInAdmin(String cmd) {
+        try {
+            Process p = Runtime.getRuntime().exec("su admin");
+//            Runtime.getRuntime().exec(cmd+";th test.lua");
+            DataOutputStream os = new DataOutputStream(p.getOutputStream());
+            os.writeBytes(cmd + "\n");
+            os.flush();
+            os.close();
+            p.waitFor();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return false;
     }

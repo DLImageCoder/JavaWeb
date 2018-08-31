@@ -25,7 +25,7 @@ public final class ConnectionPool {
     private boolean cleanupRunning;
 
     public ConnectionPool() {
-        this(5, 5, 10, TimeUnit.MINUTES);
+        this(5, 5, 30, TimeUnit.MINUTES);
     }
 
     public ConnectionPool(int corePoolSize, int maxIdleConnections, long keepAliveDuration, TimeUnit timeUnit) {
@@ -54,7 +54,7 @@ public final class ConnectionPool {
     RealConnection get() {
         if (connections.size() < corePoolSize || connections.isEmpty()) {
             RealConnection connection = new RealConnection();
-            put(connection);
+            connections.add(connection);
             return connection;
         }
         int minCount = Integer.MAX_VALUE;
@@ -71,7 +71,7 @@ public final class ConnectionPool {
     void put(RealConnection connection) {
         if (!cleanupRunning) {
             cleanupRunning = true;
-            //executor.execute(cleanupRunnable);
+            executor.execute(cleanupRunnable);
         }
         connections.add(connection);
     }

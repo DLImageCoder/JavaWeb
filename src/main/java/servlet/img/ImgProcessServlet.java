@@ -83,6 +83,10 @@ public class ImgProcessServlet extends HttpServlet {
         handleResult(imgName, response);
     }
 
+    private void chmodImg(String imgName) {
+        CmdUtil.exec("cd " + BaseConsts.IMG_INPUT_Path + ";chmod 777 " + imgName);
+    }
+
     private void execPython1(String cmd) {
         CmdUtil.exec(cmd + ";python evaluate.py");
     }

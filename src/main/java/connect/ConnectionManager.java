@@ -22,14 +22,9 @@ public class ConnectionManager {
 
     public void init(){
         connectionPool=new ConnectionPool();
-        for(int i=0;i<5;i++) {
-            connectionPool.put(new RealConnection());
-        }
     }
 
     public RealConnection getRealConnection(){
         return connectionPool.get();
     }
-
-
 }
